@@ -27,7 +27,7 @@ class TwitterAuthManager {
   /**
    * The Twitter client object.
    *
-   * @var \TwitterOAuth
+   * @var \Abraham\TwitterOAuth\TwitterOAuth
    */
   private $client;
 

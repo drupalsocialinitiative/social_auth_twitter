@@ -14,8 +14,8 @@ CONTENTS OF THIS FILE
 INTRODUCTION
 ------------
 
-Social Auth Twitter Module is a Twitter Authentication integration for Drupal. It
-is based on the Social Auth and Social API projects
+Social Auth Twitter Module is a Twitter Authentication integration for Drupal.
+It is based on the Social Auth and Social API projects
 
 It adds to the site:
 * A new url: /user/login/twitter.
