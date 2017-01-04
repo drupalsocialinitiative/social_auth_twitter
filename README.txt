@@ -100,4 +100,4 @@ MAINTAINERS
 
 Current maintainers:
  * Utkarsh Dixit (denutkarsh) - https://www.drupal.org/u/denutkarsh
- * Andriy Khomych - https://www.drupal.org/u/andriy-khomych
+ * Andriy Khomych -  https://www.drupal.org/u/andriy-khomych
