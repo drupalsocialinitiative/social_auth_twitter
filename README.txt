@@ -94,3 +94,10 @@ https://www.drupal.org/node/2841076
 When posting a support request, please inform what does the status report say
 at admin/reports/composer-manager and if you were able to see any errors in
 Recent log entries.
+
+MAINTAINERS
+-----------
+
+Current maintainers:
+ * Utkarsh Dixit (denutkarsh) - https://www.drupal.org/u/denutkarsh
+ * Andriy Khomych - https://www.drupal.org/u/andriy-khomych
