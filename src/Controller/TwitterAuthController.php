@@ -112,15 +112,18 @@ class TwitterAuthController extends ControllerBase {
     // Gets the permanent access token.
     $access_token = $client->oauth('oauth/access_token', array('oauth_verifier' => $this->twitterManager->getOauthVerifier()));
     $connection = $this->networkManager->createInstance('social_auth_twitter')->getSdk2($access_token['oauth_token'], $access_token['oauth_token_secret']);
-    $params = array('include_email' => 'true', 'include_entities' => 'false', 'skip_status' => 'true');
+    $params = array(
+      'include_email' => 'true',
+      'include_entities' => 'false',
+      'skip_status' => 'true',
+    );
     // Gets user information.
-    $user = $connection->get("account/verify_credentials",$params);
+    $user = $connection->get("account/verify_credentials", $params);
     // If user information could be retrieved.
     if ($user) {
       // Tries to load the user by his email.
       $drupal_user = $this->userManager->loadUserByProperty('mail', $user->email);
       // If user email has already an account in the site.
-
       if ($drupal_user) {
         if ($this->userManager->loginUser($drupal_user)) {
           return $this->redirect('user.page');
@@ -130,17 +133,14 @@ class TwitterAuthController extends ControllerBase {
       $drupal_user = $this->userManager->createUser($user->name, $user->email);
       // If the new user could be registered.
       if ($drupal_user) {
-        //var_dump($drupal_user);
         // If the new user could be logged in.
         if ($this->userManager->loginUser($drupal_user)) {
           return $this->redirect('user.page');
         }
       }
     }
-    var_dump($user);
     drupal_set_message($this->t('You could not be authenticated, please contact the administrator'), 'error');
     return $this->redirect('user.login');
-    
   }
 
 }

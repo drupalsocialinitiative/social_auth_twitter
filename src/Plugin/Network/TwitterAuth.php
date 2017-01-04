@@ -81,9 +81,6 @@ class TwitterAuth extends SocialAuthNetwork {
     /* @var \Drupal\social_auth_twitter\Settings\TwitterAuthSettings $settings */
     $settings = $this->settings;
 
-    // Gets the absolute url of the callback.
-    $redirect_uri = $this->urlGenerator->generateFromRoute('social_auth_twitter.callback', array(), array('absolute' => TRUE));
-
     // Creates a and sets data to TwitterOAuth object.
     $client = new TwitterOAuth($settings->getConsumerKey(), $settings->getConsumerSecret());
 

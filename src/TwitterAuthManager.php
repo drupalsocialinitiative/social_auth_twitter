@@ -4,6 +4,7 @@ namespace Drupal\social_auth_twitter;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
+use \Abraham\TwitterOAuth\TwitterOAuth;
 
 /**
  * Manages the authorization process before getting a long lived access token.
@@ -52,7 +53,7 @@ class TwitterAuthManager {
    * @return $this
    *   The current object.
    */
-  public function setClient(\Abraham\TwitterOAuth\TwitterOAuth $client) {
+  public function setClient($client) {
     $this->client = $client;
     return $this;
   }
@@ -60,7 +61,7 @@ class TwitterAuthManager {
   /**
    * Gets the client object.
    *
-   * @return \Abraham\TwitterOAuth\TwitterOAuth.
+   * @return \Abraham\TwitterOAuth\TwitterOAuth
    *   The Twitter Client object.
    */
   public function getClient() {
