@@ -1,0 +1,10 @@
+social_auth_twitter.settings_form:
+  type: config_object
+  label: 'Social Auth Twitter Settings'
+  mapping:
+    consumer_key:
+      type: text
+      label: 'Consumer Key'
+    consumer_secret:
+      type: text
+      label: 'Consumer Secret'
