@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class TwitterAuth extends SocialAuthNetwork {
+class TwitterAuth extends SocialAuthNetwork implements TwitterAuthInterface {
   /**
    * The url generator.
    *
