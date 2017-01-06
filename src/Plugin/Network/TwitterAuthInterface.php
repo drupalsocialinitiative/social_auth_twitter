@@ -2,12 +2,10 @@
 
 namespace Drupal\social_auth_twitter\Plugin\Network;
 
-use Drupal\social_post\Plugin\Network\SocialPostNetworkInterface;
-
 /**
  * Defines an interface for Twitter Post Network Plugin.
  */
-interface TwitterAuthInterface extends SocialPostNetworkInterface {
+interface TwitterAuthInterface {
 
   /**
    * Gets the absolute url of the callback.
