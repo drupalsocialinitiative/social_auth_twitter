@@ -45,30 +45,6 @@ class TwitterAuthManager {
   }
 
   /**
-   * Sets the client object.
-   *
-   * @param \Abraham\TwitterOAuth\TwitterOAuth $client
-   *   Twitter Oauth object.
-   *
-   * @return $this
-   *   The current object.
-   */
-  public function setClient($client) {
-    $this->client = $client;
-    return $this;
-  }
-
-  /**
-   * Gets the client object.
-   *
-   * @return \Abraham\TwitterOAuth\TwitterOAuth
-   *   The Twitter Client object.
-   */
-  public function getClient() {
-    return $this->client;
-  }
-
-  /**
    * Returns the OAuth Verifier provided by Twitter.
    *
    * @return string

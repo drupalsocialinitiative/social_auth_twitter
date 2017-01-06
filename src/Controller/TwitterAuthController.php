@@ -107,8 +107,6 @@ class TwitterAuthController extends ControllerBase {
     /* @var \Abraham\TwitterOAuth\TwitterOAuth $client */
     $client = $this->networkManager->createInstance('social_auth_twitter')->getSdk2($oauth_token, $oauth_token_secret);
 
-    $this->twitterManager->setClient($client);
-
     // Gets the permanent access token.
     $access_token = $client->oauth('oauth/access_token', array('oauth_verifier' => $this->twitterManager->getOauthVerifier()));
     $connection = $this->networkManager->createInstance('social_auth_twitter')->getSdk2($access_token['oauth_token'], $access_token['oauth_token_secret']);
