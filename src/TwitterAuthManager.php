@@ -31,7 +31,7 @@ class TwitterAuthManager {
   private $client;
 
   /**
-   * TwitterPostManager constructor.
+   * TwitterAuthManager constructor.
    *
    * @param \Symfony\Component\HttpFoundation\Session\Session $session
    *   The session manager.
