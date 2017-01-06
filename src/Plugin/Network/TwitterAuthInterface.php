@@ -3,7 +3,7 @@
 namespace Drupal\social_auth_twitter\Plugin\Network;
 
 /**
- * Defines an interface for Twitter Post Network Plugin.
+ * Defines an interface for Twitter Auth Network Plugin.
  */
 interface TwitterAuthInterface {
 
