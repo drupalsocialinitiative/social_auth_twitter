@@ -98,7 +98,7 @@ class TwitterAuth extends SocialAuthNetwork {
    * {@inheritdoc}
    */
   public function getSdk2($oauth_token, $oauth_token_secret) {
-    /* @var \Drupal\social_post_example\Settings\TwitterPostSettings $settings */
+    /* @var \Drupal\social_auth_twitter\Settings\TwitterAuthSettings $settings */
     $settings = $this->settings;
 
     return new TwitterOAuth($settings->getConsumerKey(), $settings->getConsumerSecret(),
