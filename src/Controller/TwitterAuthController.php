@@ -8,8 +8,7 @@ use Drupal\social_api\Plugin\NetworkManager;
 use Drupal\social_auth\SocialAuthUserManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Zend\Diactoros\Response\RedirectResponse;
-use \Abraham\TwitterOAuth\TwitterOAuth;
-use Drupal\social_auth_twitter\Plugin\Network\TwitterAuth;
+
 /**
  * Manages requests to Twitter API.
  */
