@@ -34,7 +34,7 @@ RECOMMENDED MODULES
 -------------------
 
  * Composer Manager (https://www.drupal.org/project/composer_manager):
-   This module will help to install the Google API PHP Client library,
+   This module will help to install the TwitterOAuth PHP library,
    which is a library required to make user authentication.
 
 INSTALLATION

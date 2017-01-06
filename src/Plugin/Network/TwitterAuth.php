@@ -11,7 +11,7 @@ use \Abraham\TwitterOAuth\TwitterOAuth;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Defines Social Auth Google Network Plugin.
+ * Defines Social Auth Twitter Network Plugin.
  *
  * @Network(
  *   id = "social_auth_twitter",
