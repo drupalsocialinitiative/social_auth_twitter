@@ -72,10 +72,9 @@ class TwitterAuthController extends ControllerBase {
     /* @var TwitterAuth $network_plugin */
     // Creates an instance of the social_auth_twitter Network Plugin.
     $network_plugin = $this->networkManager->createInstance('social_auth_twitter');
-    
     try {
        /* @var TwitterOAuth $connection */
-      /* Gets the Twitter SDK.
+       /* Gets the Twitter SDK.
        *
        * Notice that getSdk() does not require any argument, whereas getSdk2()
        * does.
@@ -127,7 +126,7 @@ class TwitterAuthController extends ControllerBase {
     // If user information could be retrieved.
     if ($user) {
       // Check if we are able to get the credentials.
-      if(isset($user->email)){
+      if (isset($user->email)) {
         // Tries to load the user by his email.
         $drupal_user = $this->userManager->loadUserByProperty('mail', $user->email);
         // If user email has already an account in the site.
