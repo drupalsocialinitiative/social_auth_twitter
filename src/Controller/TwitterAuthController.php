@@ -124,9 +124,9 @@ class TwitterAuthController extends ControllerBase {
     );
     // Gets user information.
     $user = $connection->get("account/verify_credentials", $params);
-    // If user information could be retrieved.w
+    // If user information could be retrieved.
     if ($user) {
-      // Check if we are able to get the credentials
+      // Check if we are able to get the credentials.
       if(isset($user->email)){
         // Tries to load the user by his email.
         $drupal_user = $this->userManager->loadUserByProperty('mail', $user->email);
@@ -149,6 +149,6 @@ class TwitterAuthController extends ControllerBase {
     }
     drupal_set_message($this->t('You could not be authenticated, please contact the administrator'), 'error');
     return $this->redirect('user.login');
-  }
+  TA}
 
 }
