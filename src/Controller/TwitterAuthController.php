@@ -72,30 +72,37 @@ class TwitterAuthController extends ControllerBase {
     /* @var TwitterAuth $network_plugin */
     // Creates an instance of the social_auth_twitter Network Plugin.
     $network_plugin = $this->networkManager->createInstance('social_auth_twitter');
+    
+    try {
+       /* @var TwitterOAuth $connection */
+      /* Gets the Twitter SDK.
+       *
+       * Notice that getSdk() does not require any argument, whereas getSdk2()
+       * does.
+       *
+       * Your social network might not require to have different ways of getting
+       * an instance of the SDK, but Twitter does.
+       */
 
-    /* @var TwitterOAuth $connection */
-    /* Gets the Twitter SDK.
-     *
-     * Notice that getSdk() does not require any argument, whereas getSdk2()
-     * does.
-     *
-     * Your social network might not require to have different ways of getting
-     * an instance of the SDK, but Twitter does.
-     */
-    $connection = $network_plugin->getSdk();
+      $connection = $network_plugin->getSdk();
 
-    // Requests Twitter to get temporary tokens.
-    $request_token = $connection->oauth('oauth/request_token', array('oauth_callback' => $network_plugin->getOauthCallback()));
+      // Requests Twitter to get temporary tokens.
+      $request_token = $connection->oauth('oauth/request_token', array('oauth_callback' => $network_plugin->getOauthCallback()));
 
-    // Saves the temporary token values in session.
-    $this->twitterManager->setOauthToken($request_token['oauth_token']);
-    $this->twitterManager->setOauthTokenSecret($request_token['oauth_token_secret']);
+      // Saves the temporary token values in session.
+      $this->twitterManager->setOauthToken($request_token['oauth_token']);
+      $this->twitterManager->setOauthTokenSecret($request_token['oauth_token_secret']);
 
-    // Generates url for user authentication.
-    $url = $connection->url('oauth/authorize', array('oauth_token' => $request_token['oauth_token']));
+      // Generates url for user authentication.
+      $url = $connection->url('oauth/authorize', array('oauth_token' => $request_token['oauth_token']));
 
-    // Redirects the user to allow him to grant permissions.
-    return new RedirectResponse($url);
+      // Redirects the user to allow him to grant permissions.
+      return new RedirectResponse($url);
+    }
+    catch (\Exception $ex) {
+      drupal_set_message($this->t('You could not be authenticated, please contact the administrator'), 'error');
+    }
+    return $this->redirect('user.login');
   }
 
   /**

@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Render\MetadataBubblingUrlGenerator;
 use Drupal\social_api\SocialApiException;
 use Drupal\social_auth\Plugin\Network\SocialAuthNetwork;
-use \Abraham\TwitterOAuth\TwitterOAuth;
+use Abraham\TwitterOAuth\TwitterOAuth;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
