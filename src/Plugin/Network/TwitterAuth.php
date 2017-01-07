@@ -48,7 +48,7 @@ class TwitterAuth extends SocialAuthNetwork implements TwitterAuthInterface {
   }
 
   /**
-   * GoogleLogin constructor.
+   * TwitterLogin constructor.
    *
    * @param \Drupal\Core\Render\MetadataBubblingUrlGenerator $url_generator
    *   Used to generate a absolute url for authentication.
