@@ -75,13 +75,13 @@ class TwitterAuthController extends ControllerBase {
     try {
       /* @var TwitterOAuth $connection */
       /* Gets the Twitter SDK.
-      *
-      * Notice that getSdk() does not require any argument, whereas getSdk2()
-      * does.
-      *
-      * Your social network might not require to have different ways of getting
-      * an instance of the SDK, but Twitter does.
-      */
+       *
+       * Notice that getSdk() does not require any argument, whereas getSdk2()
+       * does.
+       *
+       * Your social network might not require to have different ways of getting
+       * an instance of the SDK, but Twitter does.
+       */
 
       $connection = $network_plugin->getSdk();
 
