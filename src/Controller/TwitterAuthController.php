@@ -73,15 +73,15 @@ class TwitterAuthController extends ControllerBase {
     // Creates an instance of the social_auth_twitter Network Plugin.
     $network_plugin = $this->networkManager->createInstance('social_auth_twitter');
     try {
-       /* @var TwitterOAuth $connection */
-       /* Gets the Twitter SDK.
-       *
-       * Notice that getSdk() does not require any argument, whereas getSdk2()
-       * does.
-       *
-       * Your social network might not require to have different ways of getting
-       * an instance of the SDK, but Twitter does.
-       */
+      /* @var TwitterOAuth $connection */
+      /* Gets the Twitter SDK.
+      *
+      * Notice that getSdk() does not require any argument, whereas getSdk2()
+      * does.
+      *
+      * Your social network might not require to have different ways of getting
+      * an instance of the SDK, but Twitter does.
+      */
 
       $connection = $network_plugin->getSdk();
 
@@ -148,6 +148,6 @@ class TwitterAuthController extends ControllerBase {
     }
     drupal_set_message($this->t('You could not be authenticated, please contact the administrator'), 'error');
     return $this->redirect('user.login');
-  TA}
+  }
 
 }
