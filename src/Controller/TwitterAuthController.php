@@ -131,16 +131,16 @@ class TwitterAuthController extends ControllerBase {
         $drupal_user = $this->userManager->loadUserByProperty('mail', $user->email);
         // If user email has already an account in the site.
         if ($drupal_user) {
-          if ($this->userManager->loginUser($drupal_user)) {
+          if ($this->userManager->loginUser($drupal_user, 'social_auth_twitter')) {
             return $this->redirect('user.page');
           }
         }
 
-        $drupal_user = $this->userManager->createUser($user->name, $user->email);
+        $drupal_user = $this->userManager->createUser($user->name, $user->email, 'social_auth_twitter');
         // If the new user could be registered.
         if ($drupal_user) {
           // If the new user could be logged in.
-          if ($this->userManager->loginUser($drupal_user)) {
+          if ($this->userManager->loginUser($drupal_user, 'social_auth_twitter')) {
             return $this->redirect('user.page');
           }
         }
