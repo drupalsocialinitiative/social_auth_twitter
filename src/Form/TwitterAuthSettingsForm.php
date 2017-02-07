@@ -2,19 +2,19 @@
 
 namespace Drupal\social_auth_twitter\Form;
 
-use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\social_auth\Form\SocialAuthSettingsForm;
 
 /**
  * Settings form for Social Auth Twitter.
  */
-class TwitterAuthSettingsForm extends ConfigFormBase {
+class TwitterAuthSettingsForm extends SocialAuthSettingsForm {
 
   /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return array('social_auth_twitter.settings');
+    return array_merge(['social_auth_twitter.settings'], parent::getEditableConfigNames());
   }
 
   /**
