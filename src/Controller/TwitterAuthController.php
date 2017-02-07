@@ -49,6 +49,7 @@ class TwitterAuthController extends ControllerBase {
     $this->networkManager = $network_manager;
     $this->twitterManager = $twitter_manager;
     $this->userManager = $user_manager;
+    $this->userManager->setPluginId('social_auth_twitter');
   }
 
   /**
@@ -69,20 +70,11 @@ class TwitterAuthController extends ControllerBase {
    *   Redirection to Twitter Accounts.
    */
   public function redirectToTwitter() {
-    /* @var TwitterAuth $network_plugin */
+    /* @var \Drupal\social_auth_twitter\Plugin\Network\TwitterAuth $network_plugin */
     // Creates an instance of the social_auth_twitter Network Plugin.
     $network_plugin = $this->networkManager->createInstance('social_auth_twitter');
     try {
-      /* @var TwitterOAuth $connection */
-      /* Gets the Twitter SDK.
-       *
-       * Notice that getSdk() does not require any argument, whereas getSdk2()
-       * does.
-       *
-       * Your social network might not require to have different ways of getting
-       * an instance of the SDK, but Twitter does.
-       */
-
+      /* @var \Abraham\TwitterOAuth $connection */
       $connection = $network_plugin->getSdk();
 
       // Requests Twitter to get temporary tokens.
@@ -123,29 +115,15 @@ class TwitterAuthController extends ControllerBase {
     );
     // Gets user information.
     $user = $connection->get("account/verify_credentials", $params);
+
     // If user information could be retrieved.
     if ($user) {
-      // Check if we are able to get the credentials.
-      if (isset($user->email)) {
-        // Tries to load the user by his email.
-        $drupal_user = $this->userManager->loadUserByProperty('mail', $user->email);
-        // If user email has already an account in the site.
-        if ($drupal_user) {
-          if ($this->userManager->loginUser($drupal_user, 'social_auth_twitter')) {
-            return $this->redirect('user.page');
-          }
-        }
+      // Remove _normal from url to get a bigger profile picture.
+      $picture = str_replace('_normal', '', $user->profile_image_url_https);
 
-        $drupal_user = $this->userManager->createUser($user->name, $user->email, 'social_auth_twitter');
-        // If the new user could be registered.
-        if ($drupal_user) {
-          // If the new user could be logged in.
-          if ($this->userManager->loginUser($drupal_user, 'social_auth_twitter')) {
-            return $this->redirect('user.page');
-          }
-        }
-      }
+      return $this->userManager->authenticateUser($user->email, $user->name, $user->id, $picture);
     }
+
     drupal_set_message($this->t('You could not be authenticated, please contact the administrator'), 'error');
     return $this->redirect('user.login');
   }
