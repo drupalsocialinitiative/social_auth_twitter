@@ -99,5 +99,6 @@ MAINTAINERS
 -----------
 
 Current maintainers:
- * Utkarsh Dixit (denutkarsh) - https://www.drupal.org/u/denutkarsh
  * Andriy Khomych - https://www.drupal.org/u/andriy-khomych
+ * Getulio Sánchez (gvso) - https://www.drupal.org/u/gvso
+ * Utkarsh Dixit (denutkarsh) - https://www.drupal.org/u/denutkarsh
