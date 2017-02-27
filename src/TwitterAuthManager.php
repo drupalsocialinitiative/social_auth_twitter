@@ -24,13 +24,6 @@ class TwitterAuthManager {
   protected $request;
 
   /**
-   * The Twitter client object.
-   *
-   * @var \Abraham\TwitterOAuth\TwitterOAuth
-   */
-  private $client;
-
-  /**
    * TwitterAuthManager constructor.
    *
    * @param \Symfony\Component\HttpFoundation\Session\Session $session
