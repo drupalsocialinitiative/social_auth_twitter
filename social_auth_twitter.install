@@ -5,21 +5,20 @@
  * Install and uninstall functions for the Twitter Login module.
  */
 
+use Drupal\social_api\Utility\SocialApiImplementerInstaller;
 use Drupal\social_auth\Controller\SocialAuthController;
 
 /**
  * Implements hook_requirements().
  */
 function social_auth_twitter_requirements($phase) {
-  $requirements = array();
+  $requirements = [];
+
+  // Social API should be installed at this point in order to check library.
+  \Drupal::service('module_installer')->install(['social_api']);
 
   if ($phase == 'install') {
-    if (!class_exists('\Abraham\TwitterOAuth\TwitterOAuth', TRUE)) {
-      $requirements['social_auth_twitter'] = [
-        'description' => t('Social Auth Twitter requires TwitterOAuth PHP Library. Make sure the library is installed via Composer. Check README.txt for installation instructions.'),
-        'severity' => REQUIREMENT_ERROR,
-      ];
-    }
+    $requirements = SocialApiImplementerInstaller::checkLibrary('social_auth_twitter', 'Social Auth Twitter', 'abraham/twitteroauth', 0.6, 1.0);
   }
 
   return $requirements;
