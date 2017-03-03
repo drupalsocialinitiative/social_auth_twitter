@@ -15,12 +15,16 @@
     },
     "authors": [
         {
-            "name": "Utkarsh Dixit (denutkarsh)",
-            "email": "downloadplaza97@gmail.com"
+          "name": "Andriy Khomych",
+          "email": "andriy.khomych@gmail.com"
         },
         {
-            "name": "Andriy Khomych",
-            "email": "andriy.khomych@gmail.com"
+          "name": "Getulio Valentin Sánchez (gvso)",
+          "email": "valentin2507@gmail.com"
+        },
+        {
+            "name": "Utkarsh Dixit (denutkarsh)",
+            "email": "downloadplaza97@gmail.com"
         }
     ]
 }
