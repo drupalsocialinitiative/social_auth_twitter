@@ -7,6 +7,7 @@ use Drupal\social_auth_twitter\TwitterAuthManager;
 use Drupal\social_api\Plugin\NetworkManager;
 use Drupal\social_auth\SocialAuthUserManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 
 /**
@@ -36,6 +37,13 @@ class TwitterAuthController extends ControllerBase {
   private $userManager;
 
   /**
+   * The session manager.
+   *
+   * @var \Symfony\Component\HttpFoundation\Session\SessionInterface
+   */
+  protected $session;
+
+  /**
    * TwitterLoginController constructor.
    *
    * @param \Drupal\social_api\Plugin\NetworkManager $network_manager
@@ -44,12 +52,20 @@ class TwitterAuthController extends ControllerBase {
    *   Used to manage authentication methods.
    * @param \Drupal\social_auth\SocialAuthUserManager $user_manager
    *   Manages user login/registration.
+   * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
+   *   Used to store the access token into a session variable.
    */
-  public function __construct(NetworkManager $network_manager, TwitterAuthManager $twitter_manager, SocialAuthUserManager $user_manager) {
+  public function __construct(NetworkManager $network_manager, TwitterAuthManager $twitter_manager, SocialAuthUserManager $user_manager, SessionInterface $session) {
     $this->networkManager = $network_manager;
     $this->twitterManager = $twitter_manager;
     $this->userManager = $user_manager;
+    $this->session = $session;
+
+    // Sets the plugin id.
     $this->userManager->setPluginId('social_auth_twitter');
+
+    // Sets the session keys to nullify if user could not logged in.
+    $this->userManager->setSessionKeysToNullify(['social_auth_twitter_access_token']);
   }
 
   /**
@@ -59,7 +75,8 @@ class TwitterAuthController extends ControllerBase {
     return new static(
       $container->get('plugin.network.manager'),
       $container->get('twitter_auth.manager'),
-      $container->get('social_auth.user_manager')
+      $container->get('social_auth.user_manager'),
+      $container->get('session')
     );
   }
 
@@ -74,7 +91,7 @@ class TwitterAuthController extends ControllerBase {
     // Creates an instance of the social_auth_twitter Network Plugin.
     $network_plugin = $this->networkManager->createInstance('social_auth_twitter');
     try {
-      /* @var \Abraham\TwitterOAuth $connection */
+      /* @var \Abraham\TwitterOAuth\TwitterOAuth $connection */
       $connection = $network_plugin->getSdk();
 
       // Requests Twitter to get temporary tokens.
@@ -113,6 +130,10 @@ class TwitterAuthController extends ControllerBase {
       'include_entities' => 'false',
       'skip_status' => 'true',
     );
+
+    // Saves access token so that event subscribers can call Twitter API.
+    $this->session->set('social_auth_twitter_access_token', $access_token);
+
     // Gets user information.
     $user = $connection->get("account/verify_credentials", $params);
 
