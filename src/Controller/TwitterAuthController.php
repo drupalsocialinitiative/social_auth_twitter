@@ -95,14 +95,14 @@ class TwitterAuthController extends ControllerBase {
       $connection = $network_plugin->getSdk();
 
       // Requests Twitter to get temporary tokens.
-      $request_token = $connection->oauth('oauth/request_token', array('oauth_callback' => $network_plugin->getOauthCallback()));
+      $request_token = $connection->oauth('oauth/request_token', ['oauth_callback' => $network_plugin->getOauthCallback()]);
 
       // Saves the temporary token values in session.
       $this->twitterManager->setOauthToken($request_token['oauth_token']);
       $this->twitterManager->setOauthTokenSecret($request_token['oauth_token_secret']);
 
       // Generates url for user authentication.
-      $url = $connection->url('oauth/authorize', array('oauth_token' => $request_token['oauth_token']));
+      $url = $connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]);
 
       // Redirects the user to allow him to grant permissions.
       return new RedirectResponse($url);
@@ -123,13 +123,13 @@ class TwitterAuthController extends ControllerBase {
     $client = $this->networkManager->createInstance('social_auth_twitter')->getSdk2($oauth_token, $oauth_token_secret);
 
     // Gets the permanent access token.
-    $access_token = $client->oauth('oauth/access_token', array('oauth_verifier' => $this->twitterManager->getOauthVerifier()));
+    $access_token = $client->oauth('oauth/access_token', ['oauth_verifier' => $this->twitterManager->getOauthVerifier()]);
     $connection = $this->networkManager->createInstance('social_auth_twitter')->getSdk2($access_token['oauth_token'], $access_token['oauth_token_secret']);
-    $params = array(
+    $params = [
       'include_email' => 'true',
       'include_entities' => 'false',
       'skip_status' => 'true',
-    );
+    ];
 
     // Saves access token so that event subscribers can call Twitter API.
     $this->session->set('social_auth_twitter_access_token', $access_token);
