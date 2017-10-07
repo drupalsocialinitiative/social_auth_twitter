@@ -32,7 +32,7 @@ class TwitterAuthSettingsForm extends SocialAuthSettingsForm {
 
     $form['twitter_settings'] = [
       '#type' => 'details',
-      '#title' => $this->t('Twitter OAuth settings'),
+      '#title' => $this->t('Twitter OAuth Settings'),
       '#open' => TRUE,
     ];
 
