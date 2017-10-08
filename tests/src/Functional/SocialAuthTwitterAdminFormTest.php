@@ -9,7 +9,7 @@ use Drupal\Tests\BrowserTestBase;
  *
  * @group social_auth
  *
- * @ingroup social_auth_linkedin
+ * @ingroup social_auth_twitter
  */
 class SocialAuthTwitterAdminFormTest extends BrowserTestBase {
 
