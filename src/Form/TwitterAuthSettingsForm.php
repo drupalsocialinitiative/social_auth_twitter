@@ -62,8 +62,8 @@ class TwitterAuthSettingsForm extends SocialAuthSettingsForm {
     $values = $form_state->getValues();
 
     $this->config('social_auth_twitter.settings')
-      ->set('consumer_key', $values['consumer_key'])
-      ->set('consumer_secret', $values['consumer_secret'])
+      ->set('consumer_key', trim($values['consumer_key']))
+      ->set('consumer_secret', trim($values['consumer_secret']))
       ->save();
 
     parent::submitForm($form, $form_state);
