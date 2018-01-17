@@ -18,8 +18,8 @@ It is based on the Social Auth and Social API projects
 
 It adds to the site:
  * A new url: /user/login/twitter.
- * A settings form on /admin/config/social-api/social-auth/twitter page.
- * A Twitter Logo in the Social Auth Login block.
+ * A settings form at /admin/config/social-api/social-auth/twitter.
+ * A Twitter logo in the Social Auth Login block.
 
 
 REQUIREMENTS
@@ -80,7 +80,7 @@ Before posting a support request, check Recent log entries at
 admin/reports/dblog
 
 Once you have done this, you can post a support request at module issue queue:
-https://www.drupal.org/node/social_auth_twitter/issues
+https://www.drupal.org/project/issues/social_auth_twitter
 
 When posting a support request, please inform what does the status report say
 at admin/reports/dblog and if you were able to see any errors in
