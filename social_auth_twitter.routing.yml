@@ -11,7 +11,8 @@ social_auth_twitter.redirect_to_twitter:
   defaults:
     _controller: 'Drupal\social_auth_twitter\Controller\TwitterAuthController::redirectToTwitter'
   requirements:
-    _role: 'anonymous'
+    # Anonymous users can log in, but authenticated users can also associate a new provider.
+    _access: 'TRUE'
   options:
     no_cache: TRUE
 
@@ -20,6 +21,7 @@ social_auth_twitter.callback:
   defaults:
     _controller: 'Drupal\social_auth_twitter\Controller\TwitterAuthController::callback'
   requirements:
-    _role: 'anonymous'
+    # Anonymous users can log in, but authenticated users can also associate a new provider.
+    _access: 'TRUE'
   options:
     no_cache: TRUE
