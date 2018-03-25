@@ -9,6 +9,7 @@ use Drupal\social_api\SocialApiException;
 use Drupal\social_auth\Plugin\Network\SocialAuthNetwork;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Site\Settings;
 
 /**
  * Defines Social Auth Twitter Network Plugin.
@@ -34,6 +35,13 @@ class TwitterAuth extends SocialAuthNetwork implements TwitterAuthInterface {
   protected $urlGenerator;
 
   /**
+   * The site settings.
+   *
+   * @var \Drupal\Core\Site\Settings
+   */
+  protected $siteSettings;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -43,7 +51,8 @@ class TwitterAuth extends SocialAuthNetwork implements TwitterAuthInterface {
       $plugin_id,
       $plugin_definition,
       $container->get('entity_type.manager'),
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('settings')
     );
   }
 
@@ -62,11 +71,20 @@ class TwitterAuth extends SocialAuthNetwork implements TwitterAuthInterface {
    *   The entity type manager.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The configuration factory.
+   * @param \Drupal\Core\Site\Settings $settings
+   *   The settings factory.
    */
-  public function __construct(MetadataBubblingUrlGenerator $url_generator, array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager, ConfigFactoryInterface $config_factory) {
+  public function __construct(MetadataBubblingUrlGenerator $url_generator,
+                              array $configuration,
+                              $plugin_id,
+                              $plugin_definition,
+                              EntityTypeManagerInterface $entity_type_manager,
+                              ConfigFactoryInterface $config_factory,
+                              Settings $settings) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_type_manager, $config_factory);
 
     $this->urlGenerator = $url_generator;
+    $this->siteSettings = $settings;
   }
 
   /**
@@ -83,6 +101,11 @@ class TwitterAuth extends SocialAuthNetwork implements TwitterAuthInterface {
 
     // Creates a and sets data to TwitterOAuth object.
     $client = new TwitterOAuth($settings->getConsumerKey(), $settings->getConsumerSecret());
+
+    $proxy = $this->getProxy();
+    if ($proxy) {
+      $client->setProxy($proxy);
+    }
 
     return $client;
   }
@@ -101,8 +124,40 @@ class TwitterAuth extends SocialAuthNetwork implements TwitterAuthInterface {
     /* @var \Drupal\social_auth_twitter\Settings\TwitterAuthSettings $settings */
     $settings = $this->settings;
 
-    return new TwitterOAuth($settings->getConsumerKey(), $settings->getConsumerSecret(),
+    $client = new TwitterOAuth($settings->getConsumerKey(), $settings->getConsumerSecret(),
                 $oauth_token, $oauth_token_secret);
+
+    $proxy = $this->getProxy();
+    if ($proxy) {
+      $client->setProxy($proxy);
+    }
+
+    return $client;
+  }
+
+  /**
+   * Parse proxy settings.
+   *
+   * @return array
+   *   The proxy settings or NULL if not set.
+   */
+  private function getProxy() {
+    $proxy = NULL;
+
+    $proxyUrl = $this->siteSettings->get('http_client_config')['proxy']['https'];
+
+    if ($proxyUrl) {
+      $proxy_settings = parse_url($proxyUrl);
+
+      if ($proxy_settings) {
+        $proxy = [
+          'CURLOPT_PROXY' => $proxy_settings['host'],
+          'CURLOPT_PROXYUSERPWD' => "{$proxy_settings['user']}:{$proxy_settings['pass']}",
+          'CURLOPT_PROXYPORT' => $proxy_settings['port'],
+        ];
+      }
+    }
+    return $proxy;
   }
 
 }
