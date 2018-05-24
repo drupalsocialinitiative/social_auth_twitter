@@ -141,8 +141,15 @@ class TwitterAuthController extends ControllerBase {
    * Callback function to login user.
    */
   public function callback() {
+    // Check if retrieves $_GET['denied'].
+    if ($this->request->getCurrentRequest()->query->has('denied')) {
+      drupal_set_message($this->t('You could not be authenticated.'), 'error');
+      return $this->redirect('user.login');
+    }
+
     $oauth_token = $this->twitterManager->getOauthToken();
     $oauth_token_secret = $this->twitterManager->getOauthTokenSecret();
+
     /* @var \Abraham\TwitterOAuth\TwitterOAuth $client */
     $client = $this->networkManager->createInstance('social_auth_twitter')->getSdk2($oauth_token, $oauth_token_secret);
 
