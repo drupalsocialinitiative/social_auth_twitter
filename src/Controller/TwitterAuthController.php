@@ -3,13 +3,13 @@
 namespace Drupal\social_auth_twitter\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Routing\TrustedRedirectResponse;
+use Drupal\social_auth\User\UserAuthenticator;
 use Drupal\social_auth\SocialAuthDataHandler;
 use Drupal\social_auth_twitter\TwitterAuthManager;
 use Drupal\social_api\Plugin\NetworkManager;
-use Drupal\social_auth\SocialAuthUserManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * Manages requests to Twitter API.
@@ -24,11 +24,11 @@ class TwitterAuthController extends ControllerBase {
   private $networkManager;
 
   /**
-   * The user manager.
+   * The user authenticator.
    *
-   * @var \Drupal\social_auth\SocialAuthUserManager
+   * @var \Drupal\social_auth\User\UserAuthenticator
    */
-  private $userManager;
+  private $userAuthenticator;
 
   /**
    * The Twitter authentication manager.
@@ -56,7 +56,7 @@ class TwitterAuthController extends ControllerBase {
    *
    * @param \Drupal\social_api\Plugin\NetworkManager $network_manager
    *   Used to get an instance of social_auth_twitter network plugin.
-   * @param \Drupal\social_auth\SocialAuthUserManager $user_manager
+   * @param \Drupal\social_auth\User\UserAuthenticator $user_authenticator
    *   Manages user login/registration.
    * @param \Drupal\social_auth_twitter\TwitterAuthManager $twitter_manager
    *   Used to manage authentication methods.
@@ -66,21 +66,21 @@ class TwitterAuthController extends ControllerBase {
    *   SocialAuthDataHandler object.
    */
   public function __construct(NetworkManager $network_manager,
-                              SocialAuthUserManager $user_manager,
+                              UserAuthenticator $user_authenticator,
                               TwitterAuthManager $twitter_manager,
                               RequestStack $request,
                               SocialAuthDataHandler $data_handler) {
     $this->networkManager = $network_manager;
-    $this->userManager = $user_manager;
+    $this->userAuthenticator = $user_authenticator;
     $this->twitterManager = $twitter_manager;
     $this->request = $request;
     $this->dataHandler = $data_handler;
 
     // Sets the plugin id.
-    $this->userManager->setPluginId('social_auth_twitter');
+    $this->userAuthenticator->setPluginId('social_auth_twitter');
 
     // Sets the session keys to nullify if user could not logged in.
-    $this->userManager->setSessionKeysToNullify(['access_token']);
+    $this->userAuthenticator->setSessionKeysToNullify(['access_token']);
   }
 
   /**
@@ -89,7 +89,7 @@ class TwitterAuthController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.network.manager'),
-      $container->get('social_auth.user_manager'),
+      $container->get('social_auth.user_authenticator'),
       $container->get('twitter_auth.manager'),
       $container->get('request_stack'),
       $container->get('social_auth.data_handler')
@@ -97,24 +97,21 @@ class TwitterAuthController extends ControllerBase {
   }
 
   /**
-   * Redirect to Twitter Services Authentication page.
-   *
-   * @return \Zend\Diactoros\Response\RedirectResponse
-   *   Redirection to Twitter Accounts.
+   * Redirects to Twitter for authentication.
    */
   public function redirectToTwitter() {
-    /* @var \Drupal\social_auth_twitter\Plugin\Network\TwitterAuth $network_plugin */
-    // Creates an instance of the social_auth_twitter Network Plugin.
-    $network_plugin = $this->networkManager->createInstance('social_auth_twitter');
-
-    // Destination parameter specified in url.
-    $destination = $this->request->getCurrentRequest()->get('destination');
-    // If destination parameter is set, save it.
-    if ($destination) {
-      $this->userManager->setDestination($destination);
-    }
-
     try {
+      /* @var \Drupal\social_auth_twitter\Plugin\Network\TwitterAuth $network_plugin */
+      // Creates an instance of the social_auth_twitter Network Plugin.
+      $network_plugin = $this->networkManager->createInstance('social_auth_twitter');
+
+      // Destination parameter specified in url.
+      $destination = $this->request->getCurrentRequest()->get('destination');
+      // If destination parameter is set, save it.
+      if ($destination) {
+        $this->userAuthenticator->setDestination($destination);
+      }
+
       /* @var \Abraham\TwitterOAuth\TwitterOAuth $connection */
       $connection = $network_plugin->getSdk();
 
@@ -128,13 +125,17 @@ class TwitterAuthController extends ControllerBase {
       // Generates url for user authentication.
       $url = $connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]);
 
+      $response = new TrustedRedirectResponse($url);
+      $response->send();
+
       // Redirects the user to allow him to grant permissions.
-      return new RedirectResponse($url);
+      return $response;
     }
     catch (\Exception $ex) {
       drupal_set_message($this->t('You could not be authenticated, please contact the administrator.'), 'error');
+
+      return $this->redirect('user.login');
     }
-    return $this->redirect('user.login');
   }
 
   /**
@@ -175,7 +176,7 @@ class TwitterAuthController extends ControllerBase {
       // Remove _normal from url to get a bigger profile picture.
       $picture = str_replace('_normal', '', $user->profile_image_url_https);
 
-      return $this->userManager->authenticateUser($user->name, $user->email, $user->id, json_encode($access_token), $picture);
+      return $this->userAuthenticator->authenticateUser($user->name, $user->email, $user->id, json_encode($access_token), $picture);
     }
 
     drupal_set_message($this->t('You could not be authenticated, please contact the administrator.'), 'error');
