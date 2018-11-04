@@ -3,6 +3,7 @@
 namespace Drupal\social_auth_twitter\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\social_auth\User\UserAuthenticator;
 use Drupal\social_auth\SocialAuthDataHandler;
@@ -52,6 +53,13 @@ class TwitterAuthController extends ControllerBase {
   private $dataHandler;
 
   /**
+   * The Messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * TwitterLoginController constructor.
    *
    * @param \Drupal\social_api\Plugin\NetworkManager $network_manager
@@ -64,17 +72,21 @@ class TwitterAuthController extends ControllerBase {
    *   Used to access GET parameters.
    * @param \Drupal\social_auth\SocialAuthDataHandler $data_handler
    *   SocialAuthDataHandler object.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
    */
   public function __construct(NetworkManager $network_manager,
                               UserAuthenticator $user_authenticator,
                               TwitterAuthManager $twitter_manager,
                               RequestStack $request,
-                              SocialAuthDataHandler $data_handler) {
+                              SocialAuthDataHandler $data_handler,
+                              MessengerInterface $messenger) {
     $this->networkManager = $network_manager;
     $this->userAuthenticator = $user_authenticator;
     $this->twitterManager = $twitter_manager;
     $this->request = $request;
     $this->dataHandler = $data_handler;
+    $this->messenger = $messenger;
 
     // Sets the plugin id.
     $this->userAuthenticator->setPluginId('social_auth_twitter');
@@ -92,7 +104,8 @@ class TwitterAuthController extends ControllerBase {
       $container->get('social_auth.user_authenticator'),
       $container->get('twitter_auth.manager'),
       $container->get('request_stack'),
-      $container->get('social_auth.data_handler')
+      $container->get('social_auth.data_handler'),
+      $container->get('messenger')
     );
   }
 
@@ -132,7 +145,7 @@ class TwitterAuthController extends ControllerBase {
       return $response;
     }
     catch (\Exception $ex) {
-      drupal_set_message($this->t('You could not be authenticated, please contact the administrator.'), 'error');
+      $this->messenger->addError($this->t('You could not be authenticated, please contact the administrator.'));
 
       return $this->redirect('user.login');
     }
@@ -144,7 +157,7 @@ class TwitterAuthController extends ControllerBase {
   public function callback() {
     // Check if retrieves $_GET['denied'].
     if ($this->request->getCurrentRequest()->query->has('denied')) {
-      drupal_set_message($this->t('You could not be authenticated.'), 'error');
+      $this->messenger->addError($this->t('You could not be authenticated.'));
       return $this->redirect('user.login');
     }
 
@@ -179,7 +192,7 @@ class TwitterAuthController extends ControllerBase {
       return $this->userAuthenticator->authenticateUser($user->name, $user->email, $user->id, json_encode($access_token), $picture);
     }
 
-    drupal_set_message($this->t('You could not be authenticated, please contact the administrator.'), 'error');
+    $this->messenger->addError($this->t('You could not be authenticated, please contact the administrator.'));
     return $this->redirect('user.login');
   }
 
