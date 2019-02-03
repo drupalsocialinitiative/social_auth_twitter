@@ -2,7 +2,7 @@
 
 namespace Drupal\social_auth_twitter\Settings;
 
-use Drupal\social_api\Settings\SettingsBase;
+use Drupal\social_auth\Settings\SettingsBase;
 
 /**
  * Returns the client information.
@@ -30,6 +30,7 @@ class TwitterAuthSettings extends SettingsBase implements TwitterAuthSettingsInt
     if (!$this->consumerKey) {
       $this->consumerKey = $this->config->get('consumer_key');
     }
+
     return $this->consumerKey;
   }
 
@@ -40,6 +41,7 @@ class TwitterAuthSettings extends SettingsBase implements TwitterAuthSettingsInt
     if (!$this->consumerSecret) {
       $this->consumerSecret = $this->config->get('consumer_secret');
     }
+
     return $this->consumerSecret;
   }
 

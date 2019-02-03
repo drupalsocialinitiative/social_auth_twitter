@@ -2,10 +2,12 @@
 
 namespace Drupal\social_auth_twitter\Settings;
 
+use Drupal\social_auth\Settings\SettingsInterface;
+
 /**
  * Defines an interface for Social Auth Twitter settings.
  */
-interface TwitterAuthSettingsInterface {
+interface TwitterAuthSettingsInterface extends SettingsInterface {
 
   /**
    * Gets the consumer key.
