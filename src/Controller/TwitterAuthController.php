@@ -138,6 +138,9 @@ class TwitterAuthController extends ControllerBase {
       // Generates url for user authentication.
       $url = $connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]);
 
+      // Forces session to be saved before redirection.
+      $this->twitterManager->save();
+
       $response = new TrustedRedirectResponse($url);
       $response->send();
 

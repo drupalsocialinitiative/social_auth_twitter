@@ -102,4 +102,11 @@ class TwitterAuthManager {
     return $this->session->get('social_auth_twitter_oauth_token_secret');
   }
 
+  /**
+   * Forces the session to be saved and closed.
+   */
+  public function save() {
+    $this->session->save();
+  }
+
 }
