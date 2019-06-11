@@ -4,14 +4,14 @@
     "description": "Social Auth integration for Twitter",
     "keywords": ["Drupal"],
     "license": "GPL-2.0+",
-    "homepage": "https://www.drupal.org/sandbox/utkarsh-dixit/2841076",
+    "homepage": "https://www.drupal.org/project/social_auth_twitter",
     "minimum-stability": "dev",
     "support": {
-        "issues": "https://www.drupal.org/project/issues/2841076",
-        "source": "http://cgit.drupalcode.org/sandbox-utkarsh-dixit-2841076"
+        "issues": "https://www.drupal.org/project/issues/social_auth_twitter",
+        "source": "https://git.drupalcode.org/project/social_auth_twitter"
     },
     "require": {
-        "abraham/twitteroauth": "0.*"
+        "abraham/twitteroauth": "^1.0"
     },
     "authors": [
         {

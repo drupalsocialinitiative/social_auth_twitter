@@ -144,7 +144,7 @@ class TwitterAuthController extends ControllerBase {
       $response = new TrustedRedirectResponse($url);
       $response->send();
 
-      // Redirects the user to allow him to grant permissions.
+      // Redirects the user to allow them to grant permissions.
       return $response;
     }
     catch (\Exception $ex) {
