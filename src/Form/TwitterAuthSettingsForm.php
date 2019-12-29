@@ -3,6 +3,7 @@
 namespace Drupal\social_auth_twitter\Form;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\social_auth\Form\SocialAuthSettingsForm;
 
 /**
@@ -13,15 +14,18 @@ class TwitterAuthSettingsForm extends SocialAuthSettingsForm {
   /**
    * {@inheritdoc}
    */
-  protected function getEditableConfigNames() {
-    return array_merge(['social_auth_twitter.settings'], parent::getEditableConfigNames());
+  public function getFormId() {
+    return 'social_auth_twitter_settings';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
-    return 'social_auth_twitter_settings';
+  protected function getEditableConfigNames() {
+    return array_merge(
+      parent::getEditableConfigNames(),
+      ['social_auth_twitter.settings']
+    );
   }
 
   /**
@@ -57,7 +61,7 @@ class TwitterAuthSettingsForm extends SocialAuthSettingsForm {
       '#disabled' => TRUE,
       '#title' => $this->t('Callback URLs'),
       '#description' => $this->t('Copy this value to <em>Callback URLs</em> field of your Twitter App settings.'),
-      '#default_value' => $GLOBALS['base_url'] . '/user/login/twitter/callback',
+      '#default_value' => Url::fromRoute('social_auth_twitter.callback')->setAbsolute()->toString(),
     ];
 
     return parent::buildForm($form, $form_state);
