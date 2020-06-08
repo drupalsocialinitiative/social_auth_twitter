@@ -6,6 +6,7 @@ use Drupal\Core\Url;
 use Drupal\social_api\SocialApiException;
 use Drupal\social_auth\Plugin\Network\NetworkBase;
 use Abraham\TwitterOAuth\TwitterOAuth;
+use Drupal\social_auth_twitter\Settings\TwitterAuthSettingsInterface;
 
 /**
  * Defines Social Auth Twitter Network Plugin.
@@ -34,18 +35,22 @@ class TwitterAuth extends NetworkBase implements TwitterAuthInterface {
       throw new SocialApiException(sprintf('The PHP SDK for Twitter Client could not be found. Class: %s.', $class_name));
     }
 
-    /* @var \Drupal\social_auth_twitter\Settings\TwitterAuthSettings $settings */
+    /** @var \Drupal\social_auth_twitter\Settings\TwitterAuthSettings $settings */
     $settings = $this->settings;
 
-    // Creates a and sets data to TwitterOAuth object.
-    $client = new TwitterOAuth($settings->getConsumerKey(), $settings->getConsumerSecret());
+    if ($this->validateConfig($settings)) {
+      // Creates a and sets data to TwitterOAuth object.
+      $client = new TwitterOAuth($settings->getConsumerKey(), $settings->getConsumerSecret());
 
-    $proxy = $this->getProxy();
-    if ($proxy) {
-      $client->setProxy($proxy);
+      $proxy = $this->getProxy();
+      if ($proxy) {
+        $client->setProxy($proxy);
+      }
+
+      return $client;
     }
 
-    return $client;
+    return FALSE;
   }
 
   /**
@@ -59,7 +64,7 @@ class TwitterAuth extends NetworkBase implements TwitterAuthInterface {
    * {@inheritdoc}
    */
   public function getSdk2($oauth_token, $oauth_token_secret) {
-    /* @var \Drupal\social_auth_twitter\Settings\TwitterAuthSettings $settings */
+    /** @var \Drupal\social_auth_twitter\Settings\TwitterAuthSettings $settings */
     $settings = $this->settings;
 
     $client = new TwitterOAuth($settings->getConsumerKey(), $settings->getConsumerSecret(),
@@ -71,6 +76,30 @@ class TwitterAuth extends NetworkBase implements TwitterAuthInterface {
     }
 
     return $client;
+  }
+
+  /**
+   * Checks that module is configured.
+   *
+   * @param \Drupal\social_auth_twitter\Settings\TwitterAuthSettingsInterface $settings
+   *   The Twitter auth settings.
+   *
+   * @return bool
+   *   True if module is configured.
+   *   False otherwise.
+   */
+  protected function validateConfig(TwitterAuthSettingsInterface $settings) {
+    $consumer_key = $settings->getConsumerKey();
+    $consumer_secret = $settings->getConsumerSecret();
+    if (!$consumer_key || !$consumer_secret) {
+      $this->loggerFactory
+        ->get('social_auth_twitter')
+        ->error('Define Consumer Key and Consumer Secret in module settings.');
+
+      return FALSE;
+    }
+
+    return TRUE;
   }
 
   /**
